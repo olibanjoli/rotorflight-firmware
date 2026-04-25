@@ -76,6 +76,18 @@
 #define EXBUS_CHANNELDATA_DATA_REQUEST  (0x3E01)        // Frame contains Channel Data, but with a request for data
 #define EXBUS_TELEMETRY_REQUEST         (0x3D01)        // Frame is a request Frame
 
+// DEBUG_JETI_EXBUS slot layout
+enum {
+    DEBUG_JETI_EXBUS_OVERFLOW_GUARD = 0,    // ISR bounds-check trips (would-have-overflowed)
+    DEBUG_JETI_EXBUS_BAD_HEADER,            // header MSG_LEN out of valid range
+    DEBUG_JETI_EXBUS_SHORT_FRAME,           // channel frame received with MSG_LEN != 40
+    DEBUG_JETI_EXBUS_CRC_FAIL,              // channel frame failed CRC16
+};
+
+static uint32_t jetiExBusOverflowGuardCount = 0;
+static uint32_t jetiExBusBadHeaderCount = 0;
+static uint32_t jetiExBusShortFrameCount = 0;
+static uint32_t jetiExBusCrcFailCount = 0;
 
 
 serialPort_t *jetiExBusPort;
@@ -188,6 +200,7 @@ static void jetiExBusDataReceive(uint16_t c, void *data)
         jetiExBusFrameReset();
         jetiExBusFrameState = EXBUS_STATE_ZERO;
         jetiExBusRequestState = EXBUS_STATE_ZERO;
+        DEBUG_SET(DEBUG_JETI_EXBUS, DEBUG_JETI_EXBUS_OVERFLOW_GUARD, ++jetiExBusOverflowGuardCount);
         return;
     }
 
@@ -214,6 +227,7 @@ static void jetiExBusDataReceive(uint16_t c, void *data)
         jetiExBusFrameReset();                  // not a valid frame
         jetiExBusFrameState = EXBUS_STATE_ZERO;
         jetiExBusRequestState = EXBUS_STATE_ZERO;
+        DEBUG_SET(DEBUG_JETI_EXBUS, DEBUG_JETI_EXBUS_BAD_HEADER, ++jetiExBusBadHeaderCount);
         return;
     }
 
@@ -239,8 +253,11 @@ static uint8_t jetiExBusFrameStatus(rxRuntimeState_t *rxRuntimeState)
 
     if (jetiExBusFrameState == EXBUS_STATE_RECEIVED) {
         const uint8_t msg_len = jetiExBusChannelFrame[EXBUS_HEADER_MSG_LEN];
-        if ((msg_len == EXBUS_MAX_CHANNEL_FRAME_SIZE) &&
-            (jetiExBusCalcCRC16(jetiExBusChannelFrame, msg_len) == 0)) {
+        if (msg_len != EXBUS_MAX_CHANNEL_FRAME_SIZE) {
+            DEBUG_SET(DEBUG_JETI_EXBUS, DEBUG_JETI_EXBUS_SHORT_FRAME, ++jetiExBusShortFrameCount);
+        } else if (jetiExBusCalcCRC16(jetiExBusChannelFrame, msg_len) != 0) {
+            DEBUG_SET(DEBUG_JETI_EXBUS, DEBUG_JETI_EXBUS_CRC_FAIL, ++jetiExBusCrcFailCount);
+        } else {
             jetiExBusDecodeChannelFrame(jetiExBusChannelFrame);
             frameStatus = RX_FRAME_COMPLETE;
             rxRuntimeState->lastRcFrameTimeUs = jetiTimeStampRequest;
