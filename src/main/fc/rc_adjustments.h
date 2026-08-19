@@ -157,6 +157,9 @@ typedef enum {
     ADJUSTMENT_CYCLIC_MASTER_GAIN       = 83,
     ADJUSTMENT_YAW_MASTER_GAIN          = 84,
 
+    // Trim flight
+    ADJUSTMENT_TRIM_FLIGHT_RESET        = 85,
+
     ADJUSTMENT_FUNCTION_COUNT
 } adjustmentFunc_e;
 

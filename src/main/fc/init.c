@@ -105,6 +105,7 @@
 #include "flight/servos.h"
 #include "flight/governor.h"
 #include "flight/rpm_filter.h"
+#include "flight/trim_flight.h"
 
 #include "io/asyncfatfs/asyncfatfs.h"
 #include "io/beeper.h"
@@ -709,6 +710,9 @@ void init(void)
 
     // Initialize PID control
     pidInit(currentPidProfile);
+
+    // Initialize trim flight (must be after pidInit for valid PID frequency)
+    trimFlightInit();
 
 #ifdef USE_SERVOS
     servoInit();
