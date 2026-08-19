@@ -108,6 +108,7 @@ COMMON_SRC = \
             flight/setpoint.c \
             flight/wiggle.c \
             flight/airborne.c \
+            flight/ff_estimate.c \
             io/serial_4way.c \
             io/serial_4way_avrootloader.c \
             io/serial_4way_stk500v2.c \

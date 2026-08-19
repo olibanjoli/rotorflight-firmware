@@ -1683,6 +1683,11 @@ static bool mspProcessOutCommand(int16_t cmdMSP, sbuf_t *dst)
         sbufWriteU8(dst, mixerConfig()->swash_geo_correction);
         sbufWriteS8(dst, mixerConfig()->collective_tilt_correction_pos);
         sbufWriteS8(dst, mixerConfig()->collective_tilt_correction_neg);
+        sbufWriteU8(dst, mixerConfig()->ff_estimate_gain);
+        sbufWriteU16(dst, mixerConfig()->ff_estimate_min_setpoint);
+        sbufWriteU8(dst, mixerConfig()->ff_estimate_convergence);
+        sbufWriteU16(dst, mixerConfig()->ff_estimate_min_f);
+        sbufWriteU16(dst, mixerConfig()->ff_estimate_max_f);
         break;
 
     case MSP_MIXER_INPUTS:
@@ -3503,6 +3508,15 @@ static mspResult_e mspProcessInCommand(mspDescriptor_t srcDesc, int16_t cmdMSP, 
         if (sbufBytesRemaining(src) >= 2) {
             mixerConfigMutable()->collective_tilt_correction_pos = sbufReadS8(src);
             mixerConfigMutable()->collective_tilt_correction_neg = sbufReadS8(src);
+        }
+        if (sbufBytesRemaining(src) >= 4) {
+            mixerConfigMutable()->ff_estimate_gain = sbufReadU8(src);
+            mixerConfigMutable()->ff_estimate_min_setpoint = sbufReadU16(src);
+            mixerConfigMutable()->ff_estimate_convergence = sbufReadU8(src);
+        }
+        if (sbufBytesRemaining(src) >= 4) {
+            mixerConfigMutable()->ff_estimate_min_f = sbufReadU16(src);
+            mixerConfigMutable()->ff_estimate_max_f = sbufReadU16(src);
         }
         mixerInitConfig();
         break;

@@ -42,6 +42,7 @@
 #include "flight/imu.h"
 #include "flight/mixer.h"
 #include "flight/governor.h"
+#include "flight/ff_estimate.h"
 #include "flight/wiggle.h"
 
 #include "rx/rx.h"
@@ -571,6 +572,9 @@ void mixerUpdate(timeUs_t currentTimeUs)
 
     // Fetch input values
     mixerUpdateInputs();
+
+    // Update FF estimate
+    ffEstimateUpdate();
 
     // Evaluate hard-coded mixer
     mixerUpdateSwash();

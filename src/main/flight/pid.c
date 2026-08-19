@@ -57,6 +57,7 @@
 #include "flight/leveling.h"
 #include "flight/governor.h"
 #include "flight/rpm_filter.h"
+#include "flight/ff_estimate.h"
 
 #include "pid.h"
 
@@ -1003,7 +1004,7 @@ static void pidApplyMode0(uint8_t axis)
   //// F-term
 
     // Calculate feedforward component
-    pid.data[axis].F = pid.coef[axis].Kf * setpoint;
+    pid.data[axis].F = (pid.coef[axis].Kf + ffEstimateGetKfCorrection(axis)) * setpoint;
 
   //// PID Sum
 
@@ -1242,7 +1243,7 @@ static void pidApplyCyclicMode3(uint8_t axis)
   //// Feedforward
 
     // Calculate F component
-    pid.data[axis].F = pid.coef[axis].Kf * setpoint;
+    pid.data[axis].F = (pid.coef[axis].Kf + ffEstimateGetKfCorrection(axis)) * setpoint;
 
 
   //// Feedforward Boost (FF Derivative)
@@ -1334,7 +1335,7 @@ static void pidApplyYawMode3(void)
   //// Feedforward
 
     // Calculate F component
-    pid.data[axis].F = pid.coef[axis].Kf * setpoint;
+    pid.data[axis].F = (pid.coef[axis].Kf + ffEstimateGetKfCorrection(axis)) * setpoint;
 
 
   //// Feedforward Boost (FF Derivative)
@@ -1584,7 +1585,7 @@ static void pidApplyCyclicMode4(uint8_t axis)
   //// Feedforward
 
     // Calculate F component
-    pid.data[axis].F = pid.coef[axis].Kf * setpoint;
+    pid.data[axis].F = (pid.coef[axis].Kf + ffEstimateGetKfCorrection(axis)) * setpoint;
 
 
   //// Feedforward Boost (FF Derivative)
@@ -1676,7 +1677,7 @@ static void pidApplyYawMode4(void)
   //// Feedforward
 
     // Calculate F component
-    pid.data[axis].F = pid.coef[axis].Kf * setpoint;
+    pid.data[axis].F = (pid.coef[axis].Kf + ffEstimateGetKfCorrection(axis)) * setpoint;
 
 
   //// Feedforward Boost (FF Derivative)

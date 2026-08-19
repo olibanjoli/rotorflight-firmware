@@ -13,6 +13,32 @@ PID Mode 4 is introduced for testing new features (#293). The current default
 PID Mode 3 is maintained for backward compatibility.
 
 
+## FF Estimate
+
+A new "FF Estimate" mode is added for automatic feedforward (F-term) tuning.
+While the FF ESTIMATE mode switch is active and the craft is airborne, the
+firmware measures the steady-state response during fast cyclic moves
+(|setpoint| above `ff_estimate_min_setpoint`) and accumulates a correction to
+the roll/pitch F gain. The correction is committed to the current PID profile
+when the mode deactivates while armed, bounded to
+`ff_estimate_min_f`..`ff_estimate_max_f`.
+
+### New CLI Parameters
+
+- `ff_estimate_gain` (0-200, default 50): Accumulation speed. 0 disables the feature.
+- `ff_estimate_min_setpoint` (10-500, default 50): Minimum |setpoint| in deg/s to measure.
+- `ff_estimate_convergence` (1-50, default 10): Max |error/setpoint| ratio for steady-state, in %.
+- `ff_estimate_min_f` (0-1000, default 80): Minimum allowed F parameter value.
+- `ff_estimate_max_f` (0-1000, default 150): Maximum allowed F parameter value.
+
+### New Mode
+
+- `FF ESTIMATE` (permanent ID 59): Activates FF estimation.
+
+### New Debug Mode
+
+- `FF_ESTIMATE`: F-term estimation state.
+
 ## MSP Changes
 
 ### MSP_PID_PROFILE
@@ -158,6 +184,16 @@ New Rotorflight MSPv2 command (`0x4000`) to get the SmartFuel configuration.
 
 New Rotorflight MSPv2 command (`0x4001`) to set the SmartFuel configuration.
 
+
+### MSP_MIXER_CONFIG
+
+- added `ff_estimate_gain`, `ff_estimate_min_setpoint`, `ff_estimate_convergence`,
+  `ff_estimate_min_f`, `ff_estimate_max_f` parameters
+
+### MSP_SET_MIXER_CONFIG
+
+- added `ff_estimate_gain`, `ff_estimate_min_setpoint`, `ff_estimate_convergence`,
+  `ff_estimate_min_f`, `ff_estimate_max_f` parameters
 
 ## CLI Changes
 

@@ -956,6 +956,11 @@ const clivalue_t valueTable[] = {
     { "swash_geo_correction",       VAR_INT8   | MASTER_VALUE,  .config.minmax = { -125, 125 }, PG_GENERIC_MIXER_CONFIG, offsetof(mixerConfig_t, swash_geo_correction) },
     { "collective_tilt_correction_pos", VAR_INT8 | MASTER_VALUE,  .config.minmax = { -100, 100 }, PG_GENERIC_MIXER_CONFIG, offsetof(mixerConfig_t, collective_tilt_correction_pos) },
     { "collective_tilt_correction_neg", VAR_INT8 | MASTER_VALUE,  .config.minmax = { -100, 100 }, PG_GENERIC_MIXER_CONFIG, offsetof(mixerConfig_t, collective_tilt_correction_neg) },
+    { "ff_estimate_gain",            VAR_UINT8  | MASTER_VALUE,  .config.minmaxUnsigned = { 0, 200 }, PG_GENERIC_MIXER_CONFIG, offsetof(mixerConfig_t, ff_estimate_gain) },
+    { "ff_estimate_min_setpoint",    VAR_UINT16 | MASTER_VALUE,  .config.minmaxUnsigned = { 10, 500 }, PG_GENERIC_MIXER_CONFIG, offsetof(mixerConfig_t, ff_estimate_min_setpoint) },
+    { "ff_estimate_convergence",     VAR_UINT8  | MASTER_VALUE,  .config.minmaxUnsigned = { 1, 50 }, PG_GENERIC_MIXER_CONFIG, offsetof(mixerConfig_t, ff_estimate_convergence) },
+    { "ff_estimate_min_f",           VAR_UINT16 | MASTER_VALUE,  .config.minmaxUnsigned = { 0, 1000 }, PG_GENERIC_MIXER_CONFIG, offsetof(mixerConfig_t, ff_estimate_min_f) },
+    { "ff_estimate_max_f",           VAR_UINT16 | MASTER_VALUE,  .config.minmaxUnsigned = { 0, 1000 }, PG_GENERIC_MIXER_CONFIG, offsetof(mixerConfig_t, ff_estimate_max_f) },
 
 // PG_GOVERNOR_CONFIG
     { "gov_mode",                   VAR_UINT8  | MASTER_VALUE | MODE_LOOKUP, .config.lookup = { TABLE_GOVERNOR_MODE }, PG_GOVERNOR_CONFIG, offsetof(governorConfig_t, gov_mode) },

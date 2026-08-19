@@ -109,6 +109,12 @@ typedef struct
 
     int8_t    collective_tilt_correction_pos;
     int8_t    collective_tilt_correction_neg;
+
+    uint8_t   ff_estimate_gain;          // accumulation speed (0=off, 1-200)
+    uint16_t  ff_estimate_min_setpoint;  // minimum |setpoint| to measure (deg/s)
+    uint8_t   ff_estimate_convergence;   // max |error/setpoint| ratio for steady-state (%)
+    uint16_t  ff_estimate_min_f;         // minimum allowed F parameter value
+    uint16_t  ff_estimate_max_f;         // maximum allowed F parameter value
 } mixerConfig_t;
 
 PG_DECLARE(mixerConfig_t, mixerConfig);
