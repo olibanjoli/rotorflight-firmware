@@ -150,6 +150,12 @@ void trimFlightUpdate(void)
             const float clamped_delta = clamped_total - current_trim - trim.accumulator[i];
 
             trim.accumulator[i] += clamped_delta;
+
+            // Remove the transferred amount from the PID I-term so the total
+            // swash correction (I-term + trim) stays constant during capture
+            if (trim.input_rate_scale[i] != 0.0f) {
+                pidReduceAxisIterm(i, clamped_delta / trim.input_rate_scale[i]);
+            }
         }
     }
 

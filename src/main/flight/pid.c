@@ -130,6 +130,28 @@ void INIT_CODE pidResetAxisErrors(void)
     }
 }
 
+/*
+ * Remove `delta` (in I-term output units) from the I-term of `axis`.
+ *
+ * Used by trim flight to transfer steady-state correction from the I-term
+ * into persistent swash trim. The caller adds the same amount to the trim
+ * in the same loop, so the total output is unchanged.
+ *
+ * Mode 3 keeps the error integral in axisError and scales it by Ki on output;
+ * Mode 4 keeps the Ki-scaled value directly in axisError. Mode 0 has no I-term.
+ */
+void pidReduceAxisIterm(int axis, float delta)
+{
+    if (pid.pidMode == 4) {
+        pid.data[axis].axisError -= delta;
+        pid.data[axis].I -= delta;
+    }
+    else if (pid.pidMode == 3 && pid.coef[axis].Ki != 0) {
+        pid.data[axis].axisError -= delta / pid.coef[axis].Ki;
+        pid.data[axis].I -= delta;
+    }
+}
+
 
 //// Adjustment functions
 

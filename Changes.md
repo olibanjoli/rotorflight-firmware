@@ -20,6 +20,12 @@ When the TRIM FLIGHT mode switch is active during stable hover, the firmware
 captures the steady-state PID I-term correction on roll and pitch and
 accumulates it as persistent swashplate trim.
 
+The transfer is output-neutral: whatever is added to the trim in a loop is
+removed from the PID I-term in the same loop, so the total correction on the
+swashplate does not change while trim is being captured. The I-term simply
+shrinks towards zero as the trim takes over, at a rate set by
+`trim_flight_gain`, independent of the heli or PID tune.
+
 While the mode switch stays on, a temporary loss of the accumulation
 preconditions (stick input beyond the threshold, tilt, spool-down, or loss of
 airborne state) freezes the accumulated trim; it remains applied to the

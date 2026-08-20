@@ -149,6 +149,7 @@ void resetPidProfile(pidProfile_t *profile);
 
 void pidResetAxisErrors(void);
 void pidResetAxisError(int axis);
+void pidReduceAxisIterm(int axis, float delta);
 
 void pidInit(const pidProfile_t *pidProfile);
 void pidLoadProfile(const pidProfile_t *pidProfile);
