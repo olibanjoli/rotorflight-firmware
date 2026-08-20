@@ -3518,6 +3518,7 @@ static mspResult_e mspProcessInCommand(mspDescriptor_t srcDesc, int16_t cmdMSP, 
             mixerConfigMutable()->trim_flight_trim[0] = sbufReadS16(src);
             mixerConfigMutable()->trim_flight_trim[1] = sbufReadS16(src);
         }
+        mixerInitConfig();
         break;
 
     case MSP_SET_MIXER_INPUT:
